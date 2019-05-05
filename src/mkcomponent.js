@@ -19,9 +19,11 @@ const parseArgsToOptions = (rawArgs) => {
   const args = arg({
     '--class': Boolean,
     '--pure': Boolean,
+    '--func': Boolean,
     '--help': Boolean,
     '-c': '--class',
-    '-p': '--pure'
+    '-p': '--pure',
+    '-f': '--func'
   }, {
     argv: rawArgs.slice(2),
   })

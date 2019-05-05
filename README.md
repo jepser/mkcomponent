@@ -26,6 +26,7 @@ I created this package to easily create React components, unifying the way we cr
 # Options
 - `--class`: to create a class component
 - `--pure`: to create a pure component
+- `--func`: (default) to create a functional component
 - `--help`: list the options
 
 ## Conventions
