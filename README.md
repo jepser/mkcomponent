@@ -17,11 +17,16 @@ I created this package to easily create React components, unifying the way we cr
 ## Component structure
 ``` bash
 *component-name*/
-├── index.js # exports the component
+├── index.js # exports the componnt
 ├── *component-name*.js # the component implmentation
 ├── *component-name*.test.js # tests with enzyme imported
 ├── *styled-components*.js # well... for the styled components
 ```
+
+# Options
+- `--class`: to create a class component
+- `--pure`: to create a pure component
+- `--help`: list the options
 
 ## Conventions
 - pascal-case for component name
@@ -29,4 +34,4 @@ I created this package to easily create React components, unifying the way we cr
 
 ## Roadmap
 - Accept eslint configuration from the project so the component has the same configuration
-- Have default configuration file
+- Have a configuration file depending of the project
