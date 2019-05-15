@@ -17,7 +17,7 @@ I created this package to easily create React components, unifying the way we cr
 ## Component structure
 ``` bash
 *component-name*/
-├── index.js # exports the componnt
+├── index.js # exports the component
 ├── *component-name*.js # the component implmentation
 ├── *component-name*.test.js # tests with enzyme imported
 ├── *styled-components*.js # well... for the styled components
@@ -36,3 +36,6 @@ I created this package to easily create React components, unifying the way we cr
 ## Roadmap
 - Accept eslint configuration from the project so the component has the same configuration
 - Have a configuration file depending of the project
+- Support React memo
+- Support base file for storybook
+- Support "simple component" to create a file instead a folder
