@@ -23,10 +23,19 @@ I created this package to easily create React components, unifying the way we cr
 ├── *styled-components*.js # well... for the styled components
 ```
 
+# Options
+- `--class`: to create a class component
+- `--pure`: to create a pure component
+- `--func`: (default) to create a functional component
+- `--help`: list the options
+
 ## Conventions
 - pascal-case for component name
 - slug-case for folder and file names
 
 ## Roadmap
 - Accept eslint configuration from the project so the component has the same configuration
-- Have default configuration file
+- Have a configuration file depending of the project
+- Support React memo
+- Support base file for storybook
+- Support "simple component" to create a file instead a folder
