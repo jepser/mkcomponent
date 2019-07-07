@@ -17,7 +17,7 @@
     "access": "public"
   },
   "scripts": {
-    "test": "echo \"No tests so far\" && exit 0"
+    "test": "jest ./src"
   },
   "dependencies": {
     "arg": "^4.1.0",
@@ -25,6 +25,7 @@
     "esm": "^3.2.22",
     "inquirer": "^6.3.1",
     "ncp": "^2.0.0",
+    "read-pkg-up": "^6.0.0",
     "to-pascal-case": "^1.0.0",
     "to-slug-case": "^1.0.0"
   },
