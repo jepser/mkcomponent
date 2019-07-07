@@ -19,15 +19,29 @@ I created this package to easily create React components, unifying the way we cr
 *component-name*/
 ├── index.js # exports the component
 ├── *component-name*.js # the component implmentation
-├── *component-name*.test.js # tests with enzyme imported
-├── *styled-components*.js # well... for the styled components
+├── *component-name*.test.js (opt-in with withTest) # tests with enzyme imported
+├── *styled-components*.js (opt-in with withStyled) # well... for the styled components
 ```
 
-# Options
+## Options
 - `--class`: to create a class component
 - `--pure`: to create a pure component
 - `--func`: (default) to create a functional component
 - `--help`: list the options
+
+## Configuration
+In the `package.json` of your project you can extend the configuration of the library.
+
+``` js
+{
+  //...
+  "mkcomponent": {
+    "withTest": false, // <bool> 
+    "withStyled": false, // <bool>
+    "testSuffix": "test" // {componentName}.{testSuffix}.js
+  }
+}
+```
 
 ## Conventions
 - pascal-case for component name

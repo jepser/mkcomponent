@@ -2,6 +2,7 @@ import arg from 'arg'
 import chalk from 'chalk'
 import { promptForMissingOptions } from './interactive-prompt'
 import createFiles from './create-files'
+import getConfiguration from './get-configuration';
 
 const getComponentType = (options) => {
   switch(true) {
@@ -52,9 +53,15 @@ const mkcomponent = async (args) => {
     )
   }
 
-  const { name, ...rest } = await promptForMissingOptions(options)
+  delete options.help
 
-  const result = createFiles(name, rest)
+  const defaultConfiguration = await getConfiguration()
+  const { name, ...componentOptions } = await promptForMissingOptions({
+    ...defaultConfiguration,
+    ...options
+  })
+
+  const result = createFiles(name, componentOptions)
   
   if(result.done) {
     console.log(chalk.green.bold(`Your component "${name}" has been created 🎉`))
