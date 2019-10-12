@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const $ComponentName = ({ children }) => {
+const $ComponentName = ({ children = null }) => {
   return (
     <div>{children}</div>
   )
@@ -10,9 +10,5 @@ const $ComponentName = ({ children }) => {
 $ComponentName.propTypes = {
   children: PropTypes.any,
 };
-
-$ComponentName.defaultProps = {
-  children: null,
-};   
 
 export default $ComponentName;
