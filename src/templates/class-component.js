@@ -18,4 +18,4 @@ $ComponentName.defaultProps = {
   children: null,
 };
 
-export default $ComponentName;
+export default $ExportComponentName;

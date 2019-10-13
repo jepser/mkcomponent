@@ -4,39 +4,38 @@ import toPascalCase from 'to-pascal-case'
 
 import { CLASS_COMPONENT_TYPE, PURE_COMPONENT_TYPE } from './constants'
 
-export const isClassComponent = (type) => ['class', 'pure'].includes(type) ? type : false
-export const getComponentType = type => type === 'pure' ? PURE_COMPONENT_TYPE : CLASS_COMPONENT_TYPE
+export const isClassComponent = type => (['class', 'pure'].includes(type) ? type : false)
+export const getComponentType = type => (type === 'pure' ? PURE_COMPONENT_TYPE : CLASS_COMPONENT_TYPE)
+export const getExportComponentName = (componentName, options) =>
+  options.type === 'pure' || !options.withMemo ? componentName : `React.memo(${componentName})`
 
 export const copyTemplate = ({ file, target, transform = i => i }) => {
-
-  const currentFileUrl = import.meta.url;
-  const templateDir = path.resolve(
-    new URL(currentFileUrl).pathname,
-    '../templates',
-    file
-  )
+  const currentFileUrl = import.meta.url
+  const templateDir = path.resolve(new URL(currentFileUrl).pathname, '../templates', file)
   const targetFile = path.resolve(process.cwd(), target)
 
   return fs.readFile(templateDir, (err, data) => {
     const fileContent = transform(data.toString())
 
     fs.writeFileSync(targetFile, fileContent)
-  });
+  })
 }
 
 export const getFilesToBeCreated = (fileName, options) => {
   const componentFileName = isClassComponent(options.type) ? 'class-component.js' : 'component.js'
   const componentName = toPascalCase(fileName)
   const componentType = getComponentType(options.type)
+  const exportComponentName = getExportComponentName(componentName, options)
 
   const templates = [
     {
       file: componentFileName,
       target: `${fileName}/${fileName}.js`,
-      transform: data => {
-        const withComponentName = data.replace(/\$ComponentName/g, componentName)
-        return withComponentName.replace(/\$ComponentType/g, componentType)
-      }
+      transform: data =>
+        data
+          .replace(/\$ComponentName/g, componentName)
+          .replace(/\$ExportComponentName/g, exportComponentName)
+          .replace(/\$ComponentType/g, componentType)
     },
     {
       file: 'index.js',
@@ -45,7 +44,7 @@ export const getFilesToBeCreated = (fileName, options) => {
     }
   ]
 
-  if(options.withTest) {
+  if (options.withTest) {
     templates.push({
       file: 'component.test.js',
       target: `${fileName}/${fileName}.${options.testSuffix}.js`,
@@ -53,10 +52,10 @@ export const getFilesToBeCreated = (fileName, options) => {
     })
   }
 
-  if(options.withStyled) {
+  if (options.withStyled) {
     templates.push({
       file: 'styled-components.js',
-      target: `${fileName}/styled-components.js`,
+      target: `${fileName}/styled-components.js`
     })
   }
 
@@ -73,7 +72,7 @@ const createFiles = (fileName, options) => {
     return { done: true }
   } catch (e) {
     return { done: false }
-  }  
+  }
 }
 
 export default createFiles

@@ -11,4 +11,4 @@ $ComponentName.propTypes = {
   children: PropTypes.any,
 };
 
-export default $ComponentName;
+export default $ExportComponentName;
