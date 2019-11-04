@@ -11,7 +11,10 @@ export const lintFile = (config) => ({ dir, data }) => {
 
   const lintedData = linter.verifyAndFix(data, fileConfig);
 
-  return lintedData.output;
+  return {
+    data: lintedData.output,
+    dir,
+  };
 };
 
 export const getEslintConfig = async (option) => {
