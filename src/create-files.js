@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import toPascalCase from 'to-pascal-case'
 
+import { getEslintConfig, lintFile } from './linter'
 import { CLASS_COMPONENT_TYPE, PURE_COMPONENT_TYPE } from './constants'
 
 export const isClassComponent = type => (['class', 'pure'].includes(type) ? type : false)
@@ -9,38 +10,60 @@ export const getComponentType = type => (type === 'pure' ? PURE_COMPONENT_TYPE :
 export const getExportComponentName = (componentName, options) =>
   options.type === 'pure' || !options.withMemo ? componentName : `React.memo(${componentName})`
 
-export const copyTemplate = ({ file, target, transform = i => i }) => {
-  const currentFileUrl = import.meta.url
-  const templateDir = path.resolve(new URL(currentFileUrl).pathname, '../templates', file)
+const pipe = (...functors) => input => {
+  return functors.reduce((result, functor) => functor(result) , input)
+}
+
+export const copyTemplate = ({ file, target, transform = [] }) => {
+  
+  const currentFileUrl = import.meta.url;
+  const templateDir = path.resolve(
+    new URL(currentFileUrl).pathname,
+    '../templates',
+    file
+  )
   const targetFile = path.resolve(process.cwd(), target)
 
   return fs.readFile(templateDir, (err, data) => {
-    const fileContent = transform(data.toString())
+    const fileContent = pipe(...transform)({ dir: templateDir, data: data.toString() })
 
-    fs.writeFileSync(targetFile, fileContent)
-  })
+    fs.writeFileSync(targetFile, fileContent.data)
+  });
 }
 
-export const getFilesToBeCreated = (fileName, options) => {
+export const getFilesToBeCreated = async (fileName, options) => {
   const componentFileName = isClassComponent(options.type) ? 'class-component.js' : 'component.js'
   const componentName = toPascalCase(fileName)
   const componentType = getComponentType(options.type)
   const exportComponentName = getExportComponentName(componentName, options)
 
+  const eslintConfig = options.eslint ? await getEslintConfig(options.eslint) : {}
+  const defaultTransforms = options.eslint ? [lintFile(eslintConfig)] : []
   const templates = [
     {
       file: componentFileName,
       target: `${fileName}/${fileName}.js`,
-      transform: data =>
-        data
-          .replace(/\$ComponentName/g, componentName)
-          .replace(/\$ExportComponentName/g, exportComponentName)
-          .replace(/\$ComponentType/g, componentType)
+      transform: [
+        ({ data, ...rest }) => ({
+          data: data
+            .replace(/\$ComponentName/g, componentName)
+            .replace(/\$ExportComponentName/g, exportComponentName)
+            .replace(/\$ComponentType/g, componentType),
+          ...rest
+        }),
+        ...defaultTransforms,
+      ]
     },
     {
       file: 'index.js',
       target: `${fileName}/index.js`,
-      transform: data => data.replace(/\$fileName/g, fileName)
+      transform: [
+        ({ data, ...rest }) => ({
+          data: data.replace(/\$fileName/g, fileName),
+          ...rest
+        }),
+        ...defaultTransforms,
+      ]
     }
   ]
 
@@ -48,7 +71,13 @@ export const getFilesToBeCreated = (fileName, options) => {
     templates.push({
       file: 'component.test.js',
       target: `${fileName}/${fileName}.${options.testSuffix}.js`,
-      transform: data => data.replace(/\$ComponentName/g, componentName)
+      transform: [
+        ({ data, ...rest }) => ({
+          data: data.replace(/\$ComponentName/g, componentName),
+          ...rest
+        }),
+        ...defaultTransforms,
+      ]
     })
   }
 
@@ -62,10 +91,12 @@ export const getFilesToBeCreated = (fileName, options) => {
   return templates
 }
 
-const createFiles = (fileName, options) => {
-  const files = getFilesToBeCreated(fileName, options)
+const createFiles = async (fileName, options) => {
+  const files = await getFilesToBeCreated(fileName, options)
   try {
-    fs.mkdirSync(fileName)
+    if(!fs.existsSync(fileName)) {
+      fs.mkdirSync(fileName)
+    }
 
     files.forEach(copyTemplate)
 
