@@ -1,21 +1,21 @@
-import arg from 'arg'
-import chalk from 'chalk'
-import { promptForMissingOptions } from './interactive-prompt'
-import createFiles from './create-files'
+import arg from 'arg';
+import chalk from 'chalk';
+import { promptForMissingOptions } from './interactive-prompt';
+import createFiles from './create-files';
 import getConfiguration from './get-configuration';
 
 const getComponentType = (options) => {
-  switch(true) {
+  switch (true) {
     case options['--pure']:
-      return 'pure'
+      return 'pure';
     case options['--class']:
-      return 'class'
+      return 'class';
     case options['--func']:
-      return 'func'
+      return 'func';
     default:
-      return ''
+      return '';
   }
-}
+};
 const parseArgsToOptions = (rawArgs) => {
   const args = arg({
     '--class': Boolean,
@@ -24,22 +24,22 @@ const parseArgsToOptions = (rawArgs) => {
     '--help': Boolean,
     '-c': '--class',
     '-p': '--pure',
-    '-f': '--func'
+    '-f': '--func',
   }, {
     argv: rawArgs.slice(2),
-  })
+  });
 
   return {
     name: args._[0],
     type: getComponentType(args),
-    help: args['--help']
-  }
-}
+    help: args['--help'],
+  };
+};
 
 const mkcomponent = async (args) => {
-  const options = parseArgsToOptions(args)
+  const options = parseArgsToOptions(args);
 
-  if(options.help) {
+  if (options.help) {
     return console.log(chalk`
   Usage: 
     mkcomponent {bold component-name}
@@ -49,25 +49,24 @@ const mkcomponent = async (args) => {
     --class: for class component
     --pure: for pure component
     --func: for functional component (default)
-    `
-    )
+    `);
   }
 
-  delete options.help
+  delete options.help;
 
-  const defaultConfiguration = await getConfiguration()
+  const defaultConfiguration = await getConfiguration();
   const { name, ...componentOptions } = await promptForMissingOptions({
     ...defaultConfiguration,
-    ...options
-  })
+    ...options,
+  });
 
-  const result = createFiles(name, componentOptions)
-  
-  if(result.done) {
-    console.log(chalk.green.bold(`Your component "${name}" has been created 🎉`))
+  const result = await createFiles(name, componentOptions);
+
+  if (result.done) {
+    console.log(chalk.green.bold(`Your component "${name}" has been created 🎉`));
   } else {
-    console.log(chalk.red(`Ups... "${name}" component couldn't be created 😞`))
-  }  
-}
+    console.log(chalk.red(`Ups... "${name}" component couldn't be created 😞`));
+  }
+};
 
-export default mkcomponent
+export default mkcomponent;

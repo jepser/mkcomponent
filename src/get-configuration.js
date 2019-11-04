@@ -1,20 +1,21 @@
-import readPkgUp from 'read-pkg-up'
+import readPkgUp from 'read-pkg-up';
 
 const DEFAULT_CONF = {
   withTest: false,
   withStyled: false,
   testSuffix: 'test',
-}
+  eslint: '',
+};
 
 const getConfiguration = async () => {
-  const packageJson = await readPkgUp()
+  const packageJson = await readPkgUp();
 
-  if(!packageJson || !packageJson.package.mkcomponent) return DEFAULT_CONF
+  if (!packageJson || !packageJson.package.mkcomponent) return DEFAULT_CONF;
 
   return {
     ...DEFAULT_CONF,
-    ...packageJson.package.mkcomponent
-  }
-}
+    ...packageJson.package.mkcomponent,
+  };
+};
 
-export default getConfiguration
+export default getConfiguration;
