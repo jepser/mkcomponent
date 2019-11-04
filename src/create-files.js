@@ -25,7 +25,7 @@ export const copyTemplate = ({ file, target, transform = [] }) => {
   return fs.readFile(templateDir, (err, data) => {
     const fileContent = pipe(...transform)({ dir: templateDir, data: data.toString() })
 
-    fs.writeFileSync(targetFile, fileContent)
+    fs.writeFileSync(targetFile, fileContent.data)
   });
 }
 
@@ -42,14 +42,14 @@ export const getFilesToBeCreated = async (fileName, options) => {
       target: `${fileName}/${fileName}.js`,
       transform: [
         ({ data, ...rest }) => {
-        const withComponentName = data.replace(/\$ComponentName/g, componentName)
-        return {
-          data: withComponentName.replace(/\$ComponentType/g, componentType),
-          ...rest
-        }
-      },
-      ...defaultTransforms,
-    ]
+          const withComponentName = data.replace(/\$ComponentName/g, componentName)
+          return {
+            data: withComponentName.replace(/\$ComponentType/g, componentType),
+            ...rest
+          }
+        },
+        ...defaultTransforms,
+      ]
     },
     {
       file: 'index.js',
