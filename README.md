@@ -50,6 +50,6 @@ In the `package.json` of your project you can extend the configuration of the li
 ## Roadmap
 - Accept eslint configuration from the project so the component has the same configuration
 - Have a configuration file depending of the project
-- Support React memo
+- ~~Support React memo~~
 - Support base file for storybook
 - Support "simple component" to create a file instead a folder
